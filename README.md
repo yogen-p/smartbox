@@ -10,6 +10,8 @@ And it also requires mysql connector which is available [here](https://pypi.org/
 
 
 ```kivy >= 1.11.0```
+
+
 ```mysql-connector-python >= 8.0```
 
 
