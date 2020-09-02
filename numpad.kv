@@ -1,0 +1,289 @@
+<WrappedLabel@Label>:
+	markup: True
+	size_hint_y: None
+	color: (1, 0, 0, 1)
+	height: self.texture_size[1] + (self.texture_size[1] / 2)
+
+<StageLabel@Label>:
+	markup: True
+	font_size: 30
+	halign: "center"
+	color: (1, 0, 0, 1)
+
+<ProgBar@ProgressBar>:
+	min: 0
+	max: 1
+	pos: 0, (root.height / 2) * 0.6
+
+<ChecklistLabel@ButtonBehavior+Label>:
+	markup: True
+	font_size: 20
+	halign: "center"
+	color: (1, 0, 0, 1)
+
+<CheckButton@Button>:
+	markup: True
+	font_size: 20
+	padding: 10, 10
+	size_hint: (.5, .1)
+	background_color: (1, 0, 0, 1)
+	pos: root.width / 2, root.height * .1
+
+<ListCheckBox@CheckBox>:
+	active: False
+	color: (0, 0, 0, 1)
+	on_active: app.root.on_checkbox_active(self.parent.name, self.name, self.active)
+
+<StartScreenButton@Button>:
+	markup: True
+	font_size: 20
+	on_release: app.root.change_screen(self.name)
+
+
+<NumPadRoot>:
+    orientation: "vertical"
+    kivy_screen_manager: kivy_screen_manager
+    stocks: stocks
+    login: login
+
+    ActionBar:
+        ActionView:
+            ActionPrevious:
+                title: "SmartBox GUI"
+                with_previous: False
+            ActionOverflow:
+                ActionButton:
+                    text: "Settings"
+                    on_press: app.open_settings()
+    ScreenManager:
+        id: kivy_screen_manager
+        StartScreen:
+            name: "start_screen"
+
+        LoginScreen:
+            id: login
+            name: "login"
+
+        AboutScreen:
+            name: "about"
+
+        StockScreen:
+            id: stocks
+            name: "stocks"
+
+        PrepScreen:
+            id: prep
+            name: "prep"
+
+        StopScreen:
+            id: stop
+            name: "stop"
+
+        BlockScreen:
+            id: block
+            name: "block"
+
+<StartScreen@Screen>:
+	BoxLayout:
+		orientation: "vertical"
+		padding: root.width * .1, root.height * .1
+		spacing: min(root.width, root.height) * .1
+
+		WrappedLabel:
+			text: "[b]SmartBox[/b]"
+			font_size: min(root.height, root.height) / 10
+
+		StartScreenButton:
+			text: "[b]Login[/b]"
+			name: "login"
+		StartScreenButton:
+			text: "[b]Stocks[/b]"
+			name: "stocks"
+		StartScreenButton:
+			text: "[b]About[/b]"
+			name: "about"
+
+<LoginScreen@Screen>:
+	input_pin: input_pin
+	BoxLayout:
+		orientation: "vertical"
+		padding: root.width * .15, root.height * .05
+		spacing: 10
+		WrappedLabel:
+			text: "[b]Please enter PIN[/b]"
+			font_size: min(root.height, root.height) / 20
+		BoxLayout:
+			orientation: "horizontal"
+			size_hint_y: None
+			WrappedLabel:
+				id: input_pin
+				text: ""
+				font_size: min(root.height, root.height) / 15
+			Button:
+				id: clear_btn
+				text: "[b]Clear[/b]"
+				markup: True
+				size_hint: .3, .7
+				on_release: num_pad.clear_button()
+		NumPad:
+			id: num_pad
+
+
+<StockScreen@Screen>:
+	stock_print: stock_print
+	BoxLayout:
+		padding: root.width * .2, root.height * .2
+
+		Label:
+			id: stock_print
+			text: root.get_text()
+			halign: "center"
+			markup: True
+			font_size: root.height / 20
+			text_size: self.width, None
+			center_y: .5
+		Button:
+			text: "Print"
+			on_release: root.print_stocks()
+
+
+<PrepScreen@Screen>
+	FloatLayout:
+		size: root.width, root.height
+
+		StageLabel:
+			text: "[b]PREP STAGE\nLed by ODP/ANAES Nurse[/b]"
+			pos: 0, (root.height / 2) * 0.8
+
+		ProgBar:
+			value: .4
+
+		GridLayout:
+			cols: 2
+			spacing: 10
+			pos: root.width * .2, root.height * .3
+			size_hint: (1, .4)
+			name: "prep_list"
+			ChecklistLabel:
+				text: "[b]Drugs ready?[/b]"
+				font_size: 20
+				on_press: drugs.active = not drugs.active
+			ListCheckBox:
+				id: drugs
+				name: "drugs"
+			ChecklistLabel:
+				text: "[b]Ultrasound Ready and Probe covered?[/b]"
+				on_press: ultrasound.active = not ultrasound.active
+			ListCheckBox:
+				id: ultrasound
+				name: "ultrasound"
+			ChecklistLabel:
+				text: "[b]Nerve Stimulator Ready?[/b]"
+				on_press: stimulator.active = not stimulator.active
+			ListCheckBox:
+				id : stimulator
+				name: "stimulator"
+			ChecklistLabel:
+				text: "[b]Patient Ready and Sterile Field Prepared?[/b]"
+				on_press: patient.active = not patient.active
+			ListCheckBox:
+				id : patient
+				name: "patient"
+			ChecklistLabel:
+				text: "[b]Anaesthetist Gloved and Ready for Needle?[/b]"
+				on_press: gloved.active = not gloved.active
+			ListCheckBox:
+				id: gloved
+				name: "gloved"
+
+		CheckButton:
+			text: "[b]Go to Next Stage[/b]"
+			on_release: app.root.on_next_stage(self, "prep_list", "stop")
+
+<StopScreen@Screen>
+	FloatLayout:
+		size: root.width, root.height
+
+		StageLabel:
+			text: "[b]STOP STAGE[/b]\n[b]Anaesthetist and ODP/ANAES Nurse[/b]"
+			pos: 0, (root.height / 2) * 0.8
+
+		ProgBar:
+			value: .6
+
+		GridLayout:
+			cols: 2
+			spacing: 10
+			name: "stop_list"
+			pos: root.width * .2, root.height * .3
+			size_hint: (1, .4)
+			ChecklistLabel:
+				text: "[b]Reconfirm the Consent Form & Site Marking[/b]"
+				on_press: reconfirm.active = not reconfirm.active
+			ListCheckBox:
+				id: reconfirm
+				name: "reconfirm"
+			ChecklistLabel:
+				text: "[b]Ask the Patient to Reconfirm the Side of Procedure (if still conscious)[/b]"
+				on_press: ask_patient.active = not ask_patient.active
+			ListCheckBox:
+				id: ask_patient
+				name: "ask_patient"
+			ChecklistLabel:
+				text: "[b]Reconfirm Planned BLOCK is APPROPRIATE for Planned INDICATION[/b]"
+				on_press: appropriate.active = not appropriate.active
+			ListCheckBox:
+				id: appropriate
+				name: "appropriate"
+
+		CheckButton:
+			text: "[b]Go to Next Stage[/b]"
+			on_release: app.root.on_next_stage(self, "stop_list", "block")
+
+<BlockScreen@Screen>
+	FloatLayout:
+		size: root.width, root.height
+
+		StageLabel:
+			text: "[b]BLOCK STAGE\nODP/ANAES Nurse[/b]"
+			pos: 0, (root.height / 2) * 0.8
+
+		ProgBar:
+			value: .8
+
+		GridLayout:
+			cols: 2
+			spacing: 10
+			pos: root.width * .2, root.height * .3
+			size_hint: (1, .4)
+			ChecklistLabel:
+				text: "[b]Break Box Seal and Provide Block NEEDLE \n +/- LA Infiltration Needle to ANAESTHETIST[/b]"
+				on_press: seal.active = not seal.active
+				font_size: 20
+			ListCheckBox:
+				id: seal
+				name: "seal"
+			ChecklistLabel:
+				text: "[b]Proceed with Block[/b]"
+				on_press: proceed.active = not proceed.active
+			ListCheckBox:
+				id: proceed
+				name: "proceed"
+
+		CheckButton:
+			text: "[b]Unlock Box[/b]"
+			on_release: app.root.on_unlock(self)
+
+
+<AboutScreen@Screen>:
+	BoxLayout:
+		padding: root.width * .2, root.height * .2
+
+		Label:
+			text: app.get_text()
+			halign: "center"
+			markup: True
+			font_size: root.height / 20
+			text_size: self.width, None
+			center_y: .5
+			on_ref_press: app.on_ref_press(*args)
