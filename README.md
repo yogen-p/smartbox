@@ -19,3 +19,10 @@ And it also requires mysql connector which is available [here](https://pypi.org/
 Tu run this file, execute from the terminal
 
 ```python main.py```
+
+
+### File Structure
+This project uses two separate file, one is main.py and second in numpad.kv.
+
+numpad.kv, coded using kivy language is used to design the GUI for the application.
+main.py, built using python specifies the functioning of the program.
