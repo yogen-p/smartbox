@@ -25,4 +25,5 @@ Tu run this file, execute from the terminal
 This project uses two separate file, one is main.py and second in numpad.kv.
 
 numpad.kv, coded using kivy language is used to design the GUI for the application.
+
 main.py, built using python specifies the functioning of the program.
